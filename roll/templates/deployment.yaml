@@ -16,10 +16,7 @@ spec:
                 image: {{ .Values.analysistemplate.image }}
                 imagePullPolicy: {{ .Values.analysistemplate.imagePullPolicy }}
                 command: {{ .Values.analysistemplate.command }}
-                envFrom:
-                - configMapRef:
-                    name: {{ .Values.analysistemplate.configMapRefName }}
-              restartPolicy: {{ .Values.analysistemplate.restartPolicy }}
+                
 ---
 apiVersion: apps/v1
 kind: Deployment
