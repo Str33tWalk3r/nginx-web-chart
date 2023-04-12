@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service1.name }}
+  labels:
+    app: {{ .Values.service1.app }}
+spec:
+  ports:
+  - port: {{ .Values.service1.port }}
+    targetPort: {{ .Values.service1.targetPort }}
+  selector:
+    app: {{ .Values.service1.app }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service2.name }}
+  labels:
+    app: {{ .Values.service2.app }}
+spec:
+  type: LoadBalancer
+  ports:
+  - port: {{ .Values.service2.port }}
+    targetPort: {{ .Values.service2.targetPort }}
+  selector:
+    app: {{ .Values.service2.app }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.serviceredis.name }}
+  labels:
+    app: {{ .Values.serviceredis.app }}
+spec:
+  type: LoadBalancer
+  ports:
+  - port: {{ .Values.serviceredis.port }}
+    targetPort: {{ .Values.serviceredis.targetPort }}
+  selector:
+    app: {{ .Values.serviceredis.app }}
+

@@ -1,0 +1,88 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: {{ .Values.analysistemplate.name }}
+spec:
+  metrics:
+  - name: {{ .Values.analysistemplate.metricsname }}
+    provider:
+      job:
+        spec:
+          backoffLimit: {{ .Values.analysistemplate.backoffLimit }}
+          template:
+            spec:
+              containers:
+              - name: {{ .Values.analysistemplate.containersname }}
+                image: {{ .Values.analysistemplate.image }}
+                imagePullPolicy: {{ .Values.analysistemplate.imagePullPolicy }}
+                command: {{ .Values.analysistemplate.command }}
+                envFrom:
+                - configMapRef:
+                    name: {{ .Values.analysistemplate.configMapRefName }}
+              restartPolicy: {{ .Values.analysistemplate.restartPolicy }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.redisdeployment.name }}
+  labels:
+    app: {{ .Values.redisdeployment.app }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.redisdeployment.app }}
+  replicas: {{ .Values.redisdeployment.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.redisdeployment.app }}
+    spec:
+      containers:
+      - name: {{ .Values.redisdeployment.app }}
+        image: {{ .Values.redisdeployment.image }}
+        resources:
+          requests:
+            cpu: {{ .Values.redisdeployment.cpu }}
+            memory: {{ .Values.redisdeployment.memory }}
+        ports:
+        - containerPort: {{ .Values.redisdeployment.containerPort }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ .Values.rollout.name }}
+  labels:
+    app: {{ .Values.rollout.app }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.rollout.app }}
+  replicas: {{ .Values.rollout.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.rollout.app }}
+    spec:
+      containers:
+      - name: {{ .Values.rollout.name }}
+        image: {{ .Values.rollout.image }}
+        env:
+        - name: {{ .Values.rollout.envname }}
+          value: {{ .Values.rollout.value }}
+        resources:
+          requests:
+            cpu: {{ .Values.rollout.cpu }}
+            memory: {{ .Values.rollout.memory }}
+          limits:
+            cpu: {{ .Values.rollout.cpulim }}
+            memory: {{ .Values.rollout.memorylim }}
+        ports:
+        - containerPort: {{ .Values.rollout.containerPort }}
+  strategy:
+    blueGreen:
+      activeService: {{ .Values.rollout.activeService }}
+      previewService: {{ .Values.rollout.previewService }}
+      prePromotionAnalysis:
+        templates:
+        - templateName: smoke-tests
+
