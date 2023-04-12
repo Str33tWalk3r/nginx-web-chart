@@ -48,5 +48,4 @@ analysistemplate:
   image: alpine:latest
   imagePullPolicy: IfNotPresent
   command: ["/bin/sh", "-c", "exit 0"]
-  configMapRefName: bg-rollout-configmap
   restartPolicy: Never
