@@ -17,7 +17,7 @@ rollout:
   name: realtimeapp
   app: realtime
   replicas: 2
-  image: gbaeke/fluxapp:1.0.0
+  image: gbaeke/fluxapp:1.0.2
   envname: REDISHOST
   value: "redisapp:6379"
   cpu: 25m
@@ -48,4 +48,5 @@ analysistemplate:
   image: alpine:latest
   imagePullPolicy: IfNotPresent
   command: ["/bin/sh", "-c", "exit 0"]
+  configMapRefName: bg-rollout-configmap
   restartPolicy: Never
