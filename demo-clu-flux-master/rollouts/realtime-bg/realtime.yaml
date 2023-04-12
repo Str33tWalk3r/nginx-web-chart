@@ -73,12 +73,6 @@ spec:
     blueGreen:
       activeService: realtimeapp-active
       previewService: realtimeapp-preview
-      prePromotionAnalysis:
-        templates:
-        - templateName: realtime-analysis
-        args:
-        - name: service-name
-          value: realtimeapp-preview.default.svc.cluster.local
 ---
 apiVersion: v1
 kind: Service
