@@ -7,7 +7,6 @@ spec:
   - name: service-name
   metrics:
   - name: test-realtime
-    provider:
       job:
         backoffLimit: 1
         spec:
