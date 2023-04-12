@@ -1,0 +1,42 @@
+redisdeployment:
+  name: redisapp
+  app: redis
+  replicas: 1
+  image: redis:4-32bit
+  cpu: 200m
+  memory: 100Mi
+  containerPort: 6379
+
+serviceredis:
+  name: redisapp
+  app: redis
+  port: 6379
+  targetPort: 6379
+
+rollout:
+  name: realtimeapp
+  app: realtime
+  replicas: 2
+  image: gbaeke/fluxapp:1.0.2
+  envname: REDISHOST
+  value: "redisapp:6379"
+  cpu: 25m
+  memory: 50Mi
+  cpulim: 150m
+  memorylim: 150Mi
+  containerPort: 8080
+  activeService: realtimeapp-active
+  previewService: realtimeapp-preview
+
+service1:
+  name: realtimeapp-active
+  app: realtime
+  port: 80
+  targetPort: 8080
+
+service2:
+  name: realtimeapp-preview
+  app: realtime
+  port: 80
+  targetPort: 8080
+
