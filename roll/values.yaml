@@ -16,6 +16,7 @@ serviceredis:
 rollout:
   name: realtimeapp
   app: realtime
+  revisionHistoryLimit: 2
   replicas: 2
   image: nginx
   envname: REDISHOST
