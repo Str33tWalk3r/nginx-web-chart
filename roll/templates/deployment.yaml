@@ -32,6 +32,7 @@ metadata:
   labels:
     app: {{ .Values.rollout.app }}
 spec:
+  revisionHistoryLimit: {{ .Values.rollout.revisionHistoryLimit }}
   selector:
     matchLabels:
       app: {{ .Values.rollout.app }}
