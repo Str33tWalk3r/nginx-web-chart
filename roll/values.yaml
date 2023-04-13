@@ -16,7 +16,7 @@ serviceredis:
 rollout:
   name: realtimeapp
   app: realtime
-  revisionHistoryLimit: 2
+  revisionHistoryLimit: 1
   replicas: 2
   image: gbaeke/fluxapp:1.0.0
   envname: REDISHOST
