@@ -18,7 +18,7 @@ rollout:
   app: realtime
   revisionHistoryLimit: 2
   replicas: 2
-  image: gbaeke/fluxapp:1.0.2
+  image: gbaeke/fluxapp:1.0.0
   envname: REDISHOST
   value: "redisapp:6379"
   cpu: 25m
