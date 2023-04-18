@@ -70,6 +70,3 @@ spec:
       - setWeight: 60
       - pause:
           duration: 10s
-      - setWeight: 60
-      - pause:
-          duration: 10s
