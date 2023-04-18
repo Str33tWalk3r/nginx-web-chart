@@ -58,6 +58,18 @@ spec:
         ports:
         - containerPort: {{ .Values.rollout.containerPort }}
   strategy:
-    blueGreen:
-      activeService: {{ .Values.rollout.activeService }}
-      previewService: {{ .Values.rollout.previewService }}
+    canary: 
+      stableService: {{ .Values.rollout.activeService }}
+      canaryService: {{ .Values.rollout.previewService }}
+      maxSurge: "25%"
+      maxUnavailable: 0
+      steps:
+      - setWeight: 20
+      - pause:
+          duration: 10s 
+      - setWeight: 60
+      - pause:
+          duration: 10s
+      - setWeight: 60
+      - pause:
+          duration: 10s
