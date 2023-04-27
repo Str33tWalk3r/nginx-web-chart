@@ -1,0 +1,77 @@
+---
+kind: AppProject
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: profisealabs
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  destinations:
+    - namespace: '*'
+      server: 'https://kubernetes.default.svc'
+  orphanedResources:
+    ignore:
+      - group: '*'
+        kind: Secret
+        name: tls-*
+      - group: '*'
+        kind: Secret
+        name: sh.helm.release.*
+  sourceRepos:
+    - '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stage-argo-applications
+  namespace: argocd
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: profisealabs
+  source:
+    repoURL: git@github.com:Str33tWalk3r/nginx-web-chart.git
+    path: roll
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: argocd-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  repositories: |
+    - name: devops
+      url: git@github.com:Str33tWalk3r/nginx-web-chart.git
+      type: git
+      insecure: true
+      insecureIgnoreHostKey: true
+      sshPrivateKeySecret:
+        name: bitbucket
+        key: sshPrivateKey
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: argocd-ssh-known-hosts-cm
+    app.kubernetes.io/part-of: argocd
+  name: argocd-ssh-known-hosts-cm
+data:
+  ssh_known_hosts: |
+    github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC5IfowGIbyIxrIJVVoFWiNZYWM9n/750m+d3EJKfZZNtAq+Wv9agoYaf9m/bT2IHJUDrY5/dbp8ESXHFLKGltuOhj7cYWVM6uqt5U9oYhwHeYiNr/JJLtLy+tGKh/U53Ml/UZGvi9RgWOMNkFMYykRakwUI2sRSMPYm2+aelANW2dACWqJerT/XY9juJ3xhQcTl6igU8Wy2QFtpe1fZqNxWAeD99Q3FX6Wnmi9zLzf6Ko2muz/Pp7iaM8IM90gv+rXTNctwr4JPF/m1vb3zUkb4HML8VMtuscSB2RPgIHvjFahRfHXo8zmveRYoBIgtApdzwSDA8rrIR65KYyrDnLk9CvBFLbvzmqxWTb21YAAr49/jowxidBmecGn4ev6tl9azR/twAiGM+YUW3ThHyWNSDxnjP61buce1Kl/xJxwmQtKPtCQXgvXcqFnwYkFwFKsxdoDd+DJx2cAh+K38DJAWCfZVCGhloG92Cgigsa8wfwF3MNmzZeaQZD5P+yxvl8= nikita@DESKTOP-UTR5UMS
+    github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+    github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=
